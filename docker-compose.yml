@@ -1,0 +1,66 @@
+version: "3.9"
+
+services:
+  golang:
+    image: golang
+    build:
+      context: .
+      dockerfile: golang.Dockerfile
+    networks:
+      - application-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 50M
+        reservations:
+          cpus: '0.25'
+          memory: 20M
+    labels:
+      - "traefik.http.routers.router0.rule=PathPrefix(`/`)"
+    profiles:
+      - nginx
+      - traefik
+
+  nginx:
+    image: nginx
+    build:
+      context: .
+      dockerfile: nginx.Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - application-network
+    depends_on:
+      - golang
+    profiles:
+      - nginx
+
+  traefik:
+    image: traefik:v2.5
+    command: --api.insecure=true --providers.docker
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - application-network
+    depends_on:
+      - golang
+    profiles:
+      - traefik
+
+  locust:
+    image: locustio/locust:2.4.1
+    ports:
+      - "8089:8089"
+    volumes:
+      - ./locustfile.py:/mnt/locust/locustfile.py
+    command: -f /mnt/locust/locustfile.py
+    networks:
+      - application-network
+
+networks:
+  application-network:
+    name: application-network
