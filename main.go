@@ -17,7 +17,7 @@ func (app *App) handler(w http.ResponseWriter, r *http.Request)  {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	log.Printf("%d bytes written", bytes)
+	log.Printf("%d bytes written from host %s", bytes, app.hostname)
 }
 
 func main() {
