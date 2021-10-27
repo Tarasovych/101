@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 )
 
 type App struct {
@@ -21,6 +23,17 @@ func (app *App) handler(w http.ResponseWriter, r *http.Request)  {
 }
 
 func main() {
+	sigs := make(chan os.Signal, 1)
+	done := make(chan bool, 1)
+
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+
+	go func() {
+		sig := <-sigs
+		fmt.Println(sig)
+		done <- true
+	}()
+
 	file, err := os.Open("/etc/hostname")
 	if err != nil {
 		log.Fatalln(err)
@@ -35,5 +48,10 @@ func main() {
 	app := &App{hostname: string(data)}
 
 	http.HandleFunc("/", app.handler)
-	log.Fatalln(http.ListenAndServe(":8090", nil))
+	err = http.ListenAndServe(":8090", nil)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	<-done
 }
