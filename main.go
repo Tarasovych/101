@@ -13,7 +13,7 @@ type App struct {
 }
 
 func (app *App) handler(w http.ResponseWriter, r *http.Request)  {
-	bytes, err := fmt.Fprintf(w, "hello, world! I'm %s", app.hostname)
+	bytes, err := fmt.Fprintf(w, "hello, world! I'm %s\n", app.hostname)
 	if err != nil {
 		log.Fatalln(err)
 	}
