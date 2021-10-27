@@ -1,0 +1,26 @@
+apiVersion: skaffold/v2beta19
+kind: Config
+metadata:
+  name: '-'
+build:
+  artifacts:
+    - image: golang
+      context: .
+      docker:
+        dockerfile: golang.Dockerfile
+    - image: locust
+      context: .
+      docker:
+        dockerfile: locust.Dockerfile
+  local: {}
+deploy:
+  kubectl:
+    manifests:
+      - deployment.yaml
+portForward:
+  - resourceType: service
+    resourceName: nginx
+    port: 8080
+  - resourceType: service
+    resourceName: locust
+    port: 8089
