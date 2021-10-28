@@ -9,4 +9,4 @@ Kubernetes setup:
 Docker setup:
 1. [Install](https://docs.docker.com/engine/install/) Docker Engine
 2. [Install](https://docs.docker.com/compose/install/) Docker Compose
-3. ```docker-compose up --profile nginx --scale golang=2 --build```
+3. ```docker-compose --profile nginx up --scale golang=2 --build```
