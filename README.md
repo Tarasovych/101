@@ -3,7 +3,8 @@ Kubernetes setup:
 2. [Install](https://kubernetes.io/docs/tasks/tools/install-kubectl/) kubectl
 3. [Install](https://minikube.sigs.k8s.io/docs/start/) minikube
 4. ```minikube start --kubernetes-version=v1.21.5```
-5. ```skaffold dev```
+5. ```minikube addons enable metrics-server```
+6. ```skaffold dev```
 
 Docker setup:
 1. [Install](https://docs.docker.com/engine/install/) Docker Engine
